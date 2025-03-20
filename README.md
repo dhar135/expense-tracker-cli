@@ -1,6 +1,6 @@
 # Expense Tracker
 
-A command-line expense tracking application built with Spring Shell and Spring Data JPA. This project is part of the [roadmap.sh](https://roadmap.sh) backend developer path.
+A command-line expense tracking application built with Spring Shell and Spring Data JPA. This project is inspired by [roadmap.sh's Expense Tracker Project](https://roadmap.sh/projects/expense-tracker).
 
 ## Features
 
@@ -32,19 +32,22 @@ A command-line expense tracking application built with Spring Shell and Spring D
 ### Running the Application
 
 1. Clone the repository
+
 ```bash
 git clone https://github.com/dhar135/expense-tracker.git
 cd expense-tracker
 ```
 
 2. Build the project
+
 ```bash
 ./gradlew build
 ```
 
 3. Run the application
+
 ```bash
-./gradlew bootRun
+java -jar build/libs/expense_tracker-0.1.0.jar 
 ```
 
 ## Shell Commands
@@ -105,6 +108,11 @@ The application includes unit tests for all major components. Run tests with:
 ./gradlew test
 ```
 
+## Future Features
+
+- Allow users to set a budget for each month and show a warning when the user exceeds the budget.
+- Allow users to export expenses to a CSV file.
+
 ## License
 
-This project is available under the MIT License. 
+This project is available under the MIT License.
