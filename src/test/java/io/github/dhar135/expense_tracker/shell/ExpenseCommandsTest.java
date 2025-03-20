@@ -49,7 +49,7 @@ class ExpenseCommandsTest {
         when(expenseService.createExpense(description, amount)).thenReturn(testExpense);
 
         // When
-        String result = expenseCommands.addExpense(description, amount);
+        String result = expenseCommands.addExpense(description, amount, null);
 
         // Then
         assertTrue(result.contains("Expense added successfully"));
@@ -59,24 +59,50 @@ class ExpenseCommandsTest {
     }
 
     @Test
+    void addExpense_WithCategory_ShouldReturnSuccessMessage() {
+        // Given
+        String description = "Test Expense";
+        BigDecimal amount = new BigDecimal("50.00");
+        ExpenseCategory category = ExpenseCategory.OTHER;
+
+        when(expenseService.createExpense(description, amount, category)).thenReturn(testExpense);
+
+        // When
+        String result = expenseCommands.addExpense(description, amount, category);
+
+        // Then
+        assertTrue(result.contains("Expense added successfully"));
+        assertTrue(result.contains("1")); // ID should be in the message
+
+        verify(expenseService, times(1)).createExpense(description, amount, category);
+    }
+
+    @Test
     void updateExpense_WithDescriptionAndAmount_ShouldReturnSuccessMessage() {
         // Given
         Long id = 1L;
         String description = "Updated Expense";
         BigDecimal amount = new BigDecimal("75.00");
 
+        Expense existingExpense = new Expense("Test Expense", new BigDecimal("50.00"));
+        existingExpense.setId(id);
+        existingExpense.setCategory(ExpenseCategory.OTHER);
+
         Expense updatedExpense = new Expense(description, amount);
         updatedExpense.setId(id);
+        updatedExpense.setCategory(ExpenseCategory.OTHER);
 
-        when(expenseService.updateExpense(id, description, amount)).thenReturn(updatedExpense);
+        when(expenseService.getExpenseById(id)).thenReturn(existingExpense);
+        when(expenseService.updateExpense(id, description, amount, ExpenseCategory.OTHER)).thenReturn(updatedExpense);
 
         // When
-        String result = expenseCommands.updateExpense(id, description, amount);
+        String result = expenseCommands.updateExpense(id, description, amount, null);
 
         // Then
         assertTrue(result.contains("Expense updated successfully"));
 
-        verify(expenseService, times(1)).updateExpense(id, description, amount);
+        verify(expenseService, times(1)).getExpenseById(id);
+        verify(expenseService, times(1)).updateExpense(id, description, amount, ExpenseCategory.OTHER);
     }
 
     @Test
@@ -86,15 +112,46 @@ class ExpenseCommandsTest {
         String description = "Updated Expense";
         BigDecimal amount = new BigDecimal("75.00");
 
-        when(expenseService.updateExpense(id, description, amount)).thenReturn(null);
+        when(expenseService.getExpenseById(id)).thenReturn(null);
 
         // When
-        String result = expenseCommands.updateExpense(id, description, amount);
+        String result = expenseCommands.updateExpense(id, description, amount, null);
 
         // Then
         assertEquals("Expense not found", result);
 
-        verify(expenseService, times(1)).updateExpense(id, description, amount);
+        verify(expenseService, times(1)).getExpenseById(id);
+        verify(expenseService, never()).updateExpense(anyLong(), anyString(), any(BigDecimal.class));
+        verify(expenseService, never()).updateExpense(anyLong(), anyString(), any(BigDecimal.class),
+                any(ExpenseCategory.class));
+    }
+
+    @Test
+    void updateExpense_WithCategory_ShouldReturnSuccessMessage() {
+        // Given
+        Long id = 1L;
+        String description = "Updated Expense";
+        BigDecimal amount = new BigDecimal("75.00");
+        ExpenseCategory category = ExpenseCategory.GROCERIES;
+
+        Expense existingExpense = new Expense("Test Expense", new BigDecimal("50.00"));
+        existingExpense.setId(id);
+        existingExpense.setCategory(ExpenseCategory.OTHER);
+
+        Expense updatedExpense = new Expense(description, amount, category);
+        updatedExpense.setId(id);
+
+        when(expenseService.getExpenseById(id)).thenReturn(existingExpense);
+        when(expenseService.updateExpense(id, description, amount, category)).thenReturn(updatedExpense);
+
+        // When
+        String result = expenseCommands.updateExpense(id, description, amount, category);
+
+        // Then
+        assertTrue(result.contains("Expense updated successfully"));
+
+        verify(expenseService, times(1)).getExpenseById(id);
+        verify(expenseService, times(1)).updateExpense(id, description, amount, category);
     }
 
     @Test
@@ -228,5 +285,36 @@ class ExpenseCommandsTest {
         assertTrue(result.contains("Test Expense: 50.00"));
 
         verify(expenseService, times(1)).getExpensesByCategory(category);
+    }
+
+    @Test
+    void updateExpense_WithOnlyAmount_ShouldPreserveOtherFields() {
+        // Given
+        Long id = 1L;
+        BigDecimal amount = new BigDecimal("75.00");
+
+        // Original expense with description and category
+        Expense existingExpense = new Expense("Test Expense", new BigDecimal("50.00"));
+        existingExpense.setId(id);
+        existingExpense.setCategory(ExpenseCategory.OTHER);
+
+        // Updated expense with same description but new amount
+        Expense updatedExpense = new Expense("Test Expense", amount);
+        updatedExpense.setId(id);
+        updatedExpense.setCategory(ExpenseCategory.OTHER);
+
+        when(expenseService.getExpenseById(id)).thenReturn(existingExpense);
+        when(expenseService.updateExpense(id, "Test Expense", amount, ExpenseCategory.OTHER))
+                .thenReturn(updatedExpense);
+
+        // When - only update the amount
+        String result = expenseCommands.updateExpense(id, null, amount, null);
+
+        // Then
+        assertTrue(result.contains("Expense updated successfully"));
+
+        verify(expenseService, times(1)).getExpenseById(id);
+        // Verify that the original description and category were preserved
+        verify(expenseService, times(1)).updateExpense(id, "Test Expense", amount, ExpenseCategory.OTHER);
     }
 }
