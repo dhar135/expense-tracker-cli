@@ -36,21 +36,29 @@ public class ExpenseCommands {
         return "Expense added successfully (Id: " + expense.getId() + ")";
     }
 
-    // Update expense description and amount
-    @ShellMethod(key = "update", value = "Update an expense's description and amount")
+    // Update expense
+    @ShellMethod(key = "update", value = "Update an expense")
     public String updateExpense(
             @ShellOption Long id,
-            @ShellOption String description,
-            @ShellOption BigDecimal amount,
+            @ShellOption(defaultValue = ShellOption.NULL) String description,
+            @ShellOption(defaultValue = ShellOption.NULL) BigDecimal amount,
             @ShellOption(defaultValue = ShellOption.NULL) ExpenseCategory category) {
 
-        Expense expense;
-        if (category != null) {
-            expense = expenseService.updateExpense(id, description, amount, category);
-        } else {
-            expense = expenseService.updateExpense(id, description, amount);
+        // Get the existing expense
+        Expense existingExpense = expenseService.getExpenseById(id);
+        if (existingExpense == null) {
+            return "Expense not found";
         }
-        return expense != null ? "Expense updated successfully (" + expense + ")" : "Expense not found";
+
+        // Use existing values if new ones aren't provided
+        String updatedDescription = (description != null) ? description : existingExpense.getDescription();
+        BigDecimal updatedAmount = (amount != null) ? amount : existingExpense.getAmount();
+        ExpenseCategory updatedCategory = (category != null) ? category : existingExpense.getCategory();
+
+        // Update with preserved values
+        Expense expense = expenseService.updateExpense(id, updatedDescription, updatedAmount, updatedCategory);
+
+        return "Expense updated successfully (" + expense + ")";
     }
 
     // Delete expense
@@ -86,7 +94,8 @@ public class ExpenseCommands {
     }
 
     @ShellMethod(key = "summary", value = "Get a summary of all expenses or by month")
-    public String getSummary(@ShellOption(value = "month", defaultValue = ShellOption.NULL, help = "Enter integer between 1 - 12" ) Integer month) {
+    public String getSummary(
+            @ShellOption(value = "month", defaultValue = ShellOption.NULL, help = "Enter integer between 1 - 12") Integer month) {
         if (month == null) {
             BigDecimal total = expenseService.getSummary();
             return "# Total expenses: $" + total;
