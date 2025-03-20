@@ -49,13 +49,32 @@ class ExpenseCommandsTest {
         when(expenseService.createExpense(description, amount)).thenReturn(testExpense);
 
         // When
-        String result = expenseCommands.addExpense(description, amount);
+        String result = expenseCommands.addExpense(description, amount, null);
 
         // Then
         assertTrue(result.contains("Expense added successfully"));
         assertTrue(result.contains("1")); // ID should be in the message
 
         verify(expenseService, times(1)).createExpense(description, amount);
+    }
+
+    @Test
+    void addExpense_WithCategory_ShouldReturnSuccessMessage() {
+        // Given
+        String description = "Test Expense";
+        BigDecimal amount = new BigDecimal("50.00");
+        ExpenseCategory category = ExpenseCategory.OTHER;
+
+        when(expenseService.createExpense(description, amount, category)).thenReturn(testExpense);
+
+        // When
+        String result = expenseCommands.addExpense(description, amount, category);
+
+        // Then
+        assertTrue(result.contains("Expense added successfully"));
+        assertTrue(result.contains("1")); // ID should be in the message
+
+        verify(expenseService, times(1)).createExpense(description, amount, category);
     }
 
     @Test
@@ -71,7 +90,7 @@ class ExpenseCommandsTest {
         when(expenseService.updateExpense(id, description, amount)).thenReturn(updatedExpense);
 
         // When
-        String result = expenseCommands.updateExpense(id, description, amount);
+        String result = expenseCommands.updateExpense(id, description, amount, null);
 
         // Then
         assertTrue(result.contains("Expense updated successfully"));
@@ -89,12 +108,34 @@ class ExpenseCommandsTest {
         when(expenseService.updateExpense(id, description, amount)).thenReturn(null);
 
         // When
-        String result = expenseCommands.updateExpense(id, description, amount);
+        String result = expenseCommands.updateExpense(id, description, amount, null);
 
         // Then
         assertEquals("Expense not found", result);
 
         verify(expenseService, times(1)).updateExpense(id, description, amount);
+    }
+
+    @Test
+    void updateExpense_WithCategory_ShouldReturnSuccessMessage() {
+        // Given
+        Long id = 1L;
+        String description = "Updated Expense";
+        BigDecimal amount = new BigDecimal("75.00");
+        ExpenseCategory category = ExpenseCategory.GROCERIES;
+
+        Expense updatedExpense = new Expense(description, amount, category);
+        updatedExpense.setId(id);
+
+        when(expenseService.updateExpense(id, description, amount, category)).thenReturn(updatedExpense);
+
+        // When
+        String result = expenseCommands.updateExpense(id, description, amount, category);
+
+        // Then
+        assertTrue(result.contains("Expense updated successfully"));
+
+        verify(expenseService, times(1)).updateExpense(id, description, amount, category);
     }
 
     @Test

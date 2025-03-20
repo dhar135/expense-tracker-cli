@@ -12,7 +12,6 @@ import java.util.List;
 @Service
 public class ExpenseServiceImpl implements ExpenseService {
 
-
     private final ExpenseRepository expenseRepository;
 
     public ExpenseServiceImpl(ExpenseRepository expenseRepository) {
@@ -29,6 +28,16 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     @Override
+    public Expense createExpense(String description, BigDecimal amount, ExpenseCategory category) {
+        Expense expense = new Expense();
+        expense.setDescription(description);
+        expense.setAmount(amount);
+        expense.setDate(LocalDate.now());
+        expense.setCategory(category);
+        return expenseRepository.save(expense);
+    }
+
+    @Override
     public Expense updateExpense(Long id, String description, BigDecimal amount) {
         Expense expense = expenseRepository.findById(id).orElse(null);
         if (expense != null) {
@@ -40,20 +49,12 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     @Override
-    public Expense updateExpense(Long id, String description) {
+    public Expense updateExpense(Long id, String description, BigDecimal amount, ExpenseCategory category) {
         Expense expense = expenseRepository.findById(id).orElse(null);
         if (expense != null) {
             expense.setDescription(description);
-            return expenseRepository.save(expense);
-        }
-        return null;
-    }
-
-    @Override
-    public Expense updateExpense(Long id, BigDecimal amount) {
-        Expense expense = expenseRepository.findById(id).orElse(null);
-        if (expense != null) {
             expense.setAmount(amount);
+            expense.setCategory(category);
             return expenseRepository.save(expense);
         }
         return null;

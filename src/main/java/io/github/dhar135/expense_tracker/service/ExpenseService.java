@@ -12,10 +12,14 @@ public interface ExpenseService {
     // Save Expense by description, amount
     Expense createExpense(String description, BigDecimal amount);
 
+    // Save Expense by description, amount, and category
+    Expense createExpense(String description, BigDecimal amount, ExpenseCategory category);
+
     // Update Expense
     Expense updateExpense(Long id, String description, BigDecimal amount);
-    Expense updateExpense(Long id, String description);
-    Expense updateExpense(Long id, BigDecimal amount);
+
+    // Update Expense with category
+    Expense updateExpense(Long id, String description, BigDecimal amount, ExpenseCategory category);
 
     // Delete Expense
     void deleteExpense(Long id);

@@ -23,30 +23,34 @@ public class ExpenseCommands {
 
     // Add expense
     @ShellMethod(key = "add", value = "Add an expense")
-    public String addExpense(@ShellOption(value = "description", defaultValue = ShellOption.NULL) String description, @ShellOption(value = "amount", defaultValue = ShellOption.NULL) BigDecimal amount) {
-        Expense expense = expenseService.createExpense(description, amount);
+    public String addExpense(@ShellOption(value = "description", defaultValue = ShellOption.NULL) String description,
+            @ShellOption(value = "amount", defaultValue = ShellOption.NULL) BigDecimal amount,
+            @ShellOption(value = "category", defaultValue = ShellOption.NULL) ExpenseCategory category) {
+
+        Expense expense;
+        if (category != null) {
+            expense = expenseService.createExpense(description, amount, category);
+        } else {
+            expense = expenseService.createExpense(description, amount);
+        }
         return "Expense added successfully (Id: " + expense.getId() + ")";
     }
 
     // Update expense description and amount
     @ShellMethod(key = "update", value = "Update an expense's description and amount")
-    public String updateExpense(@ShellOption Long id, @ShellOption String description, @ShellOption BigDecimal amount) {
-        Expense expense = expenseService.updateExpense(id, description, amount);
+    public String updateExpense(
+            @ShellOption Long id,
+            @ShellOption String description,
+            @ShellOption BigDecimal amount,
+            @ShellOption(defaultValue = ShellOption.NULL) ExpenseCategory category) {
+
+        Expense expense;
+        if (category != null) {
+            expense = expenseService.updateExpense(id, description, amount, category);
+        } else {
+            expense = expenseService.updateExpense(id, description, amount);
+        }
         return expense != null ? "Expense updated successfully (" + expense + ")" : "Expense not found";
-    }
-
-    // Update expense description
-    @ShellMethod(key = "update-description", value = "Update an expense")
-    public String updateExpense(@ShellOption Long id, @ShellOption String description) {
-        Expense expense = expenseService.updateExpense(id, description);
-        return expense != null ? "Expense updated successfully ("+ expense +")" : "Expense not found";
-    }
-
-    // Update expense amount
-    @ShellMethod(key = "update-amount", value = "Update an expense")
-    public String updateExpense(@ShellOption Long id, @ShellOption BigDecimal amount) {
-        Expense expense = expenseService.updateExpense(id, amount);
-        return expense != null ? "Expense updated successfully" : "Expense not found";
     }
 
     // Delete expense
@@ -64,10 +68,12 @@ public class ExpenseCommands {
             return "No expenses found";
         }
 
-        String header = String.format("%-5s | %-20s | %-10s | %-10s | %-10s", "Id", "Description", "Amount", "Date", "Category");
+        String header = String.format("%-5s | %-20s | %-10s | %-10s | %-10s", "Id", "Description", "Amount", "Date",
+                "Category");
         String line = "-------------------------------------------------------------";
         String body = expenses.stream()
-                .map(exp -> String.format("%-5s | %-20s | %-10s | %-10s | %-10s", exp.getId(), exp.getDescription(), exp.getAmount(), exp.getDate(), exp.getCategory()))
+                .map(exp -> String.format("%-5s | %-20s | %-10s | %-10s | %-10s", exp.getId(), exp.getDescription(),
+                        exp.getAmount(), exp.getDate(), exp.getCategory()))
                 .collect(Collectors.joining("\n"));
         return header + "\n" + line + "\n" + body;
     }
@@ -80,7 +86,7 @@ public class ExpenseCommands {
     }
 
     @ShellMethod(key = "summary", value = "Get a summary of all expenses or by month")
-    public String getSummary(@ShellOption(value = "summary", defaultValue = ShellOption.NULL) Integer month) {
+    public String getSummary(@ShellOption(value = "month", defaultValue = ShellOption.NULL, help = "Enter integer between 1 - 12" ) Integer month) {
         if (month == null) {
             BigDecimal total = expenseService.getSummary();
             return "# Total expenses: $" + total;
