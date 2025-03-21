@@ -10,7 +10,7 @@ A command-line expense tracking application built with Spring Shell and Spring D
 - Get expense details by ID
 - Filter expenses by category
 - View expense summaries (total and by month)
-- In-memory H2 database for persistence
+- File-based H2 database for persistence
 
 ## Tech Stack
 
