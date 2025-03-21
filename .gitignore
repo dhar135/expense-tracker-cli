@@ -40,3 +40,6 @@ out/
 *.log
 logs/
 log/
+
+### Database ###
+*.db
