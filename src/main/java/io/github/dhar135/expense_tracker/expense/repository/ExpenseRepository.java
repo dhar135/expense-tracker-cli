@@ -1,7 +1,7 @@
-package io.github.dhar135.expense_tracker.repository;
+package io.github.dhar135.expense_tracker.expense.repository;
+import io.github.dhar135.expense_tracker.expense.model.Expense;
+import io.github.dhar135.expense_tracker.expense.model.ExpenseCategory;
 
-import io.github.dhar135.expense_tracker.model.Expense;
-import io.github.dhar135.expense_tracker.model.ExpenseCategory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
