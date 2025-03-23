@@ -1,5 +1,7 @@
 package io.github.dhar135.expense_tracker.model;
 
+import io.github.dhar135.expense_tracker.expense.model.Expense;
+import io.github.dhar135.expense_tracker.expense.model.ExpenseCategory;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 

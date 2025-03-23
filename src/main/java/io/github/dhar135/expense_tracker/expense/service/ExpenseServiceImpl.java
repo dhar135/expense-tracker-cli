@@ -1,8 +1,8 @@
-package io.github.dhar135.expense_tracker.service;
+package io.github.dhar135.expense_tracker.expense.service;
 
-import io.github.dhar135.expense_tracker.model.Expense;
-import io.github.dhar135.expense_tracker.model.ExpenseCategory;
-import io.github.dhar135.expense_tracker.repository.ExpenseRepository;
+import io.github.dhar135.expense_tracker.expense.model.Expense;
+import io.github.dhar135.expense_tracker.expense.model.ExpenseCategory;
+import io.github.dhar135.expense_tracker.expense.repository.ExpenseRepository;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
