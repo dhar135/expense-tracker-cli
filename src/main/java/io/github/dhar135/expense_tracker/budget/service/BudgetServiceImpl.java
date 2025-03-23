@@ -3,11 +3,13 @@ package io.github.dhar135.expense_tracker.budget.service;
 import io.github.dhar135.expense_tracker.budget.model.Budget;
 import io.github.dhar135.expense_tracker.budget.repository.BudgetRepository;
 import io.github.dhar135.expense_tracker.expense.model.ExpenseCategory;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.Month;
 import java.util.List;
 
+@Service
 public class BudgetServiceImpl implements BudgetService {
 
     private final BudgetRepository budgetRepository;
@@ -19,19 +21,32 @@ public class BudgetServiceImpl implements BudgetService {
 
     @Override
     public Budget createBudget(BigDecimal budgetAmount, ExpenseCategory budgetCategory, Month budgetPeriod) {
+        List<Budget> existingBudgets = budgetRepository.findByBudgetCategoryAndBudgetPeriod(budgetCategory, budgetPeriod);
+        if (!existingBudgets.isEmpty()) {
+            throw new IllegalArgumentException("A budget already exists for this category and period");
+        }
         return budgetRepository.save(new Budget(budgetAmount, budgetCategory, budgetPeriod));
     }
 
     @Override
     public Budget updateBudget(Long budgetId, BigDecimal budgetAmount, ExpenseCategory budgetCategory, Month budgetPeriod) {
         Budget budget = budgetRepository.findById(budgetId).orElse(null);
-        if (budget != null) {
-            budget.setBudgetAmount(budgetAmount);
-            budget.setBudgetCategory(budgetCategory);
-            budget.setBudgetPeriod(budgetPeriod);
-            return budgetRepository.save(budget);
+        if (budget == null) {
+            return null;
         }
-        return null;
+
+        // Only check for duplicates if category or period is changing
+        if (!budget.getBudgetCategory().equals(budgetCategory) || !budget.getBudgetPeriod().equals(budgetPeriod)) {
+            List<Budget> existingBudgets = budgetRepository.findByBudgetCategoryAndBudgetPeriod(budgetCategory, budgetPeriod);
+            if (!existingBudgets.isEmpty()) {
+                throw new IllegalArgumentException("A budget already exists for this category and period");
+            }
+        }
+
+        budget.setBudgetAmount(budgetAmount);
+        budget.setBudgetCategory(budgetCategory);
+        budget.setBudgetPeriod(budgetPeriod);
+        return budgetRepository.save(budget);
     }
 
     @Override
