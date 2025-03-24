@@ -3,6 +3,7 @@ package io.github.dhar135.expense_tracker.expense.shell;
 import io.github.dhar135.expense_tracker.expense.model.Expense;
 import io.github.dhar135.expense_tracker.expense.model.ExpenseCategory;
 import io.github.dhar135.expense_tracker.expense.service.ExpenseServiceImpl;
+import io.github.dhar135.expense_tracker.util.CSVExporter;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
@@ -114,5 +115,22 @@ public class ExpenseCommands {
                 .stream()
                 .map(exp -> exp.getDescription() + ": " + exp.getAmount())
                 .collect(Collectors.joining("\n"));
+    }
+
+    // Export expenses to CSV
+    @ShellMethod(key = "export", value = "Export expenses to CSV")
+    public String exportExpenses(@ShellOption(value = "filename", help = "Specify a filename, otherwise filename will be expenses_{date}", defaultValue = ShellOption.NULL) String fileName) {
+        if (fileName == null || fileName.trim().isEmpty()) {
+            fileName = "expenses_" + LocalDate.now() + ".csv";
+        }
+
+        List<Expense> expenses = expenseService.getAllExpenses();
+        boolean success = CSVExporter.exportToCSV(expenses, fileName);
+
+        if (success) {
+            return "Expenses exported successfully to " + fileName;
+        } else {
+            return "Failed to export expenses";
+        }
     }
 }
