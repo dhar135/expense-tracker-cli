@@ -10,6 +10,8 @@ A command-line expense tracking application built with Spring Shell and Spring D
 - Get expense details by ID
 - Filter expenses by category
 - View expense summaries (total and by month)
+- Set and manage monthly budgets by category
+- Track spending against budgets
 - File-based H2 database for persistence
 
 ## Tech Stack
@@ -61,6 +63,12 @@ java -jar build/libs/expense_tracker-0.1.0.jar
 | `get` | Get an expense by ID | `--id` (long) |
 | `summary` | Get expense totals | `--month` (optional, integer 1-12) |
 | `category` | Get expenses by category | `--category` (enum value) |
+| `create-budget` | Create a budget | `--amount` (decimal), `--category` (enum value), `--period` (Month: 1-12 or JANUARY-DECEMBER) |
+| `update-budget` | Update a budget | `--id` (long), `--amount` (optional), `--category` (optional), `--period` (optional) |
+| `delete-budget` | Delete a budget | `--id` (long) |
+| `get-budget` | Get a budget by ID | `--id` (long) |
+| `get-all-budgets` | List all budgets | none |
+| `get-budgets-by-category` | Get budgets by category | `--category` (enum value) |
 
 ## Available Categories
 
@@ -90,6 +98,15 @@ list
 
 # View expenses in the entertainment category
 category --category ENTERTAINMENT
+
+# Create a budget for groceries in January
+create-budget --amount 300.00 --category GROCERIES --period JANUARY
+
+# Get all current budgets
+get-all-budgets
+
+# Update a budget (changing only the amount)
+update-budget --id 1 --amount 350.00
 ```
 
 ## Project Structure
@@ -99,6 +116,7 @@ category --category ENTERTAINMENT
   - `repository/` - Data access layer
   - `service/` - Business logic
   - `shell/` - Command line interface
+  - `budget/` - Budget related components
 
 ## Testing
 
@@ -110,7 +128,6 @@ The application includes unit tests for all major components. Run tests with:
 
 ## Future Features
 
-- Allow users to set a budget for each month and show a warning when the user exceeds the budget.
 - Allow users to export expenses to a CSV file.
 
 ## License
