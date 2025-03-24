@@ -1,8 +1,8 @@
-package io.github.dhar135.expense_tracker.shell;
+package io.github.dhar135.expense_tracker.expense.shell;
 
-import io.github.dhar135.expense_tracker.model.Expense;
-import io.github.dhar135.expense_tracker.model.ExpenseCategory;
-import io.github.dhar135.expense_tracker.service.ExpenseServiceImpl;
+import io.github.dhar135.expense_tracker.expense.model.Expense;
+import io.github.dhar135.expense_tracker.expense.model.ExpenseCategory;
+import io.github.dhar135.expense_tracker.expense.service.ExpenseServiceImpl;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;

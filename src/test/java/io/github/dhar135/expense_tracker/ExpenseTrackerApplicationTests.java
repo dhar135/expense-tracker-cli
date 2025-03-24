@@ -1,7 +1,7 @@
 package io.github.dhar135.expense_tracker;
 
-import io.github.dhar135.expense_tracker.repository.ExpenseRepository;
-import io.github.dhar135.expense_tracker.service.ExpenseService;
+import io.github.dhar135.expense_tracker.expense.repository.ExpenseRepository;
+import io.github.dhar135.expense_tracker.expense.service.ExpenseService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

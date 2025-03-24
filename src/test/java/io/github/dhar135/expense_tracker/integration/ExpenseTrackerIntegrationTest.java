@@ -1,9 +1,9 @@
 package io.github.dhar135.expense_tracker.integration;
 
-import io.github.dhar135.expense_tracker.model.Expense;
-import io.github.dhar135.expense_tracker.model.ExpenseCategory;
-import io.github.dhar135.expense_tracker.repository.ExpenseRepository;
-import io.github.dhar135.expense_tracker.service.ExpenseService;
+import io.github.dhar135.expense_tracker.expense.model.Expense;
+import io.github.dhar135.expense_tracker.expense.model.ExpenseCategory;
+import io.github.dhar135.expense_tracker.expense.repository.ExpenseRepository;
+import io.github.dhar135.expense_tracker.expense.service.ExpenseService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

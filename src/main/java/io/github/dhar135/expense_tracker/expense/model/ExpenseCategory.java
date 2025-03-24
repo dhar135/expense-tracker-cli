@@ -1,4 +1,4 @@
-package io.github.dhar135.expense_tracker.model;
+package io.github.dhar135.expense_tracker.expense.model;
 
 public enum ExpenseCategory {
     GROCERIES,

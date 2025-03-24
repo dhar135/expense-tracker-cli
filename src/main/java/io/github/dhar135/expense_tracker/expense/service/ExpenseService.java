@@ -1,11 +1,11 @@
-package io.github.dhar135.expense_tracker.service;
-
-import io.github.dhar135.expense_tracker.model.Expense;
-import io.github.dhar135.expense_tracker.model.ExpenseCategory;
+package io.github.dhar135.expense_tracker.expense.service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+
+import io.github.dhar135.expense_tracker.expense.model.Expense;
+import io.github.dhar135.expense_tracker.expense.model.ExpenseCategory;
 
 public interface ExpenseService {
 

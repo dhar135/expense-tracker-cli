@@ -1,4 +1,4 @@
-package io.github.dhar135.expense_tracker.model;
+package io.github.dhar135.expense_tracker.expense.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
