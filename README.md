@@ -49,7 +49,7 @@ cd expense-tracker
 3. Run the application
 
 ```bash
-java -jar build/libs/expense_tracker-0.1.0.jar 
+java -jar build/libs/expense_tracker-0.2.0.jar 
 ```
 
 ## Shell Commands
